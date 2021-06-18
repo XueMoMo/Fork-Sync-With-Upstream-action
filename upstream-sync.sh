@@ -80,7 +80,7 @@ git remote add upstream "${UPSTREAM_REPO}"
 
 # check latest commit hashes for a match, exit if nothing to sync
 git fetch ${INPUT_GIT_FETCH_ARGS} upstream "${INPUT_UPSTREAM_BRANCH}"
-DIFF=$(git log "${INPUT_TARGET_BRANCH}..upstream/"${INPUT_UPSTREAM_BRANCH}" --oneline)
+DIFF=$(git log -1 "${INPUT_TARGET_BRANCH}..upstream/${INPUT_UPSTREAM_BRANCH}" --oneline)
 
 if [ "${DIFF}" = "" ]; then
     echo "::set-output name=has_new_commits::false"
