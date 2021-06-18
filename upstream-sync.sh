@@ -66,14 +66,10 @@ fi
 # set user credentials in git config
 config_git
 
-# ensure target_branch is checked out
-if [ $(git branch --show-current) != "${INPUT_TARGET_BRANCH}" ]; then
-    git checkout ${INPUT_GIT_CHECKOUT_ARGS} "${INPUT_TARGET_BRANCH}"
-    echo 'Target branch ' ${INPUT_TARGET_BRANCH} ' checked out' 1>&1
-fi
+local_branch="${INPUT_TARGET_BRANCH}-for-upstream"
 
-# remove old upstream
-git branch --set-upstream-to=origin/"${INPUT_TARGET_BRANCH}"
+# switch to branch-for-upstream -> origin/branch
+git switch -c "${local_branch}" --track origin/"${INPUT_TARGET_BRANCH}"
 
 # sync code
 git pull --rebase
@@ -86,7 +82,7 @@ git remote add upstream "${UPSTREAM_REPO}"
 
 # check latest commit hashes for a match, exit if nothing to sync
 git fetch ${INPUT_GIT_FETCH_ARGS} upstream "${INPUT_UPSTREAM_BRANCH}"
-DIFF=$(git rev-list "${INPUT_TARGET_BRANCH}..upstream/${INPUT_UPSTREAM_BRANCH}")
+DIFF=$(git rev-list "${local_branch}..upstream/${INPUT_UPSTREAM_BRANCH}")
 
 if [ "${DIFF}" = "" ]; then
     echo "::set-output name=has_new_commits::false"
@@ -109,7 +105,7 @@ echo 'Sync successful' 1>&1
 
 # push to origin target_branch
 echo 'Pushing to target branch...' 1>&1
-git push ${INPUT_GIT_PUSH_ARGS} origin "${INPUT_TARGET_BRANCH}"
+git push ${INPUT_GIT_PUSH_ARGS} origin HEAD:"${INPUT_TARGET_BRANCH}"
 echo 'Push successful' 1>&1
 
 # reset user credentials for future actions
