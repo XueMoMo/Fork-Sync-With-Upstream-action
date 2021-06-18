@@ -73,7 +73,7 @@ if [ $(git branch --show-current) != "${INPUT_TARGET_BRANCH}" ]; then
 fi
 
 # remove old upstream
-git remote remove upstream
+git branch --set-upstream-to=origin/"${INPUT_TARGET_BRANCH}"
 
 # set upstream to upstream_repository
 git remote add upstream "${UPSTREAM_REPO}"
