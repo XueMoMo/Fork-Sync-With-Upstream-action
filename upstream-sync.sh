@@ -72,6 +72,9 @@ if [ $(git branch --show-current) != "${INPUT_TARGET_BRANCH}" ]; then
     echo 'Target branch ' ${INPUT_TARGET_BRANCH} ' checked out' 1>&1
 fi
 
+# remove old upstream
+git remote remove upstream
+
 # set upstream to upstream_repository
 git remote add upstream "${UPSTREAM_REPO}"
 
@@ -80,7 +83,7 @@ git remote add upstream "${UPSTREAM_REPO}"
 
 # check latest commit hashes for a match, exit if nothing to sync
 git fetch ${INPUT_GIT_FETCH_ARGS} upstream "${INPUT_UPSTREAM_BRANCH}"
-DIFF=$(git log -1 "${INPUT_TARGET_BRANCH}..upstream/${INPUT_UPSTREAM_BRANCH}" --oneline)
+DIFF=$(git log -3 "${INPUT_TARGET_BRANCH}..upstream/${INPUT_UPSTREAM_BRANCH}" --oneline)
 
 if [ "${DIFF}" = "" ]; then
     echo "::set-output name=has_new_commits::false"
