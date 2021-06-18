@@ -1,4 +1,4 @@
-name: 'Fork Sync'
+name: 'Sync-Fork-action'
 author: 'Xuemomo'
 description: 'Automatically updates fork if new commits from upstream repo'
 
