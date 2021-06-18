@@ -75,6 +75,9 @@ fi
 # remove old upstream
 git branch --set-upstream-to=origin/"${INPUT_TARGET_BRANCH}"
 
+# sync code
+git pull --rebase
+
 # set upstream to upstream_repository
 git remote add upstream "${UPSTREAM_REPO}"
 
